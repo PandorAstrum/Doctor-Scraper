@@ -15,10 +15,12 @@ class MdSpider(Spider):
     name = 'md'
     allowed_domains = ['md.com']
     start_urls = ['https://www.md.com/doctors/family-doctor/florida/~/~']
-
+    user_agent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"
+    meta_proxy = "https://197.149.128.53:49224"
     def start_requests(self):
+
         for url in self.start_urls:
-            yield Request(url, callback=self.parse)
+            yield Request(url)
 
     def parse(self, response):
         all_urls = response.xpath('//a[@itemprop="url"]/@href').extract()
@@ -62,11 +64,9 @@ class MdSpider(Spider):
             'URL': response.url,
         }
 
-
+#
 # from scrapy.crawler import CrawlerProcess
 #
-# c = CrawlerProcess({
-#     'USER_AGENT': 'Mozilla/5.0',
-# })
+# c = CrawlerProcess()
 # c.crawl(MdSpider)
 # c.start()
