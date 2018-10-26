@@ -45,7 +45,7 @@ DEFAULT_REQUEST_HEADERS = {
     'accept-language': 'en-GB,en;q=0.8,en-US;q=0.6,ml;q=0.4',
     'cache-control': 'max-age=0',
     'upgrade-insecure-requests': '1',
-    'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/56.0.2924.87 Safari/537.36'
+    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36'
 }
 
 # Enable or disable spider middlewares
@@ -95,5 +95,5 @@ DEFAULT_REQUEST_HEADERS = {
 
 
 FEED_EXPORTERS = {
-    'csv': 'doctors.exporters.FixLineCsvItemExporter',
+    'csv': 'doctors.exporter.FixLineCsvItemExporter',
 }

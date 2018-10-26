@@ -4,6 +4,7 @@ from scrapy import Request
 from scrapy.spiders import CrawlSpider, Rule, Spider
 from scrapy.linkextractors import LinkExtractor
 from lxml import html
+from doctors.configure import _list_of_url
 
 _list_of_page = ['https://www.md.com/doctors/allergist-immunologist/florida/~/~',
                   'https://www.md.com/doctors/cardiologist/florida/~/~',
@@ -11,11 +12,13 @@ _list_of_page = ['https://www.md.com/doctors/allergist-immunologist/florida/~/~'
                   'https://www.md.com/doctors/ent-otolaryngologist/florida/~/~',
                   'https://www.md.com/doctors/family-doctor/florida/~/~']
 
-class MdSpider(Spider):
-    name = 'md'
+class DoctordataSpider(Spider):
+    name = 'Doctordata'
     allowed_domains = ['md.com']
-    start_urls = ['https://www.md.com/doctors/family-doctor/florida/~/~']
-    user_agent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1"
+
+    start_urls = _list_of_url
+
+    user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36"
     meta_proxy = "https://197.149.128.53:49224"
     def start_requests(self):
 
@@ -23,14 +26,26 @@ class MdSpider(Spider):
             yield Request(url)
 
     def parse(self, response):
-        all_urls = response.xpath('//a[@itemprop="url"]/@href').extract()
-        doctor_urls = list(set(all_urls))  # make unique
-        for doctor in doctor_urls:
-            yield Request(doctor, callback=self.parse_deeper)
-    #         # yield Request(doctor, self.parse_deeper)
-        next_page_url = response.xpath('//li[@class="pagination_next"]//a/@href').extract_first()
-        if next_page_url:
-            yield Request(next_page_url)
+        # check if it falles under any website
+        if "www.md.com" in response.url:
+            all_urls = response.xpath('//a[@itemprop="url"]/@href').extract()
+            doctor_urls = list(set(all_urls))  # make unique
+            for doctor in doctor_urls:
+                yield Request(doctor, callback=self.parse_deeper)
+            next_page_url = response.xpath('//li[@class="pagination_next"]//a/@href').extract_first()
+            if next_page_url:
+                yield Request(next_page_url)
+        elif "www.healthgrades.com" in response.url:
+            # do processing here
+            pass
+        elif "www.wellness.com" in response.url:
+            # do processing here
+            pass
+        else:
+            # error
+            pass
+
+
 
     def parse_deeper(self, response):
         doctor_name = response.xpath('//span[@itemprop="name"]/text()').extract_first()
